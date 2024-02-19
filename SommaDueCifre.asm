@@ -4,6 +4,7 @@ org 256
     print2 db "Inserire il secondo numero: $"
     print3 db "La somma dei due numeri e': $" 
     divisore dw 10
+    risultato dw ?
 .code
     lea dx,print1
     mov ah, 9
@@ -70,15 +71,35 @@ org 256
     mov ah,9
     int 21h
     
-    mov ax,bx
-    div 0ah
+    MOV AH,00h
+    MOV AL,BH  
+    MOV CX, 10          
 
-    mov ax,bx
-    mov AH,0Eh
-    int 21h
-    
-    
-    
-mov ax,4c00h
-int 21h
+    MOV BX, 10         
+    MOV SI, 0          
+
+converti_numero:
+    MOV DX, 0           
+    DIV divisore              
+
+    ADD DL, '0'         
+    MOV [SI], DL        
+    INC SI              
+
+    CMP AX, 0        
+    JNZ converti_numero 
+
+
+stampa_numero:
+    DEC SI              
+
+    MOV AH, 02h         
+    MOV DL, [SI]        
+    INT 21h             
+
+    CMP SI, 0
+    JG stampa_numero    
+
+    MOV AH, 4Ch
+    INT 21h
 ends
